@@ -1,0 +1,52 @@
+{
+    "Physics": {
+        "GRAVITY": 0.8999999761581421,
+        "BASE_JUMP": -15,
+        "VERTICAL_SPEED_JUMP_INCREASE": 0.20000000298023224,
+        "FRICTION": 0.1499999761581421,
+        "ACCELERATION": 0.30000001192092896
+    },
+    "Game World": {
+        "SCREEN_WIDTH": 700,
+        "SCREEN_HEIGHT": 800,
+        "PLAYER_SIZE": 25,
+        "PLATFORM_HEIGHT": 20,
+        "CAMERA_THRESHOLD": 200,
+        "PLATFORM_SPACING": 80,
+        "BASE_PLATFORM_WIDTH": 200,
+        "MIN_PLATFORM_WIDTH": 20,
+        "MAX_SPEED_LEVEL": 15,
+        "PLATFORM_SHAKE_DURATION": 1500,
+        "DIFFICULTY_INCREASE_TIMER": 30,
+        "PLATFORM_REDUCTION_COEF": 0.949999988079071,
+        "COMBO_TIMEOUT": 3000,
+        "DARK_MODE_CHANCE": 0.05000000074505806,
+        "DARK_MODE_DURATION": 10000
+    },
+    "Colors": {
+        "PLAYER_COLOR": [
+            255.0,
+            0.0,
+            0.0,
+            255.0
+        ],
+        "PLATFORM_COLOR": [
+            0.0,
+            0.0,
+            255.0,
+            255.0
+        ],
+        "GRADIENT_TOP_COLOR": [
+            135.0,
+            206.0,
+            235.0,
+            255.0
+        ],
+        "GRADIENT_BOTTOM_COLOR": [
+            0.0,
+            0.0,
+            141.24705505371094,
+            255.0
+        ]
+    }
+}
