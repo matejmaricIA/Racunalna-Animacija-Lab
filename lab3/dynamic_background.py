@@ -29,9 +29,11 @@ class DynamicBackground:
             parallax_coef = random.uniform(0.1, 1.0)
             self.shapes.append(BackgroundShape(screen_width, screen_height))
 
-    def update(self, player_y, max_height, scroll_speed):
+    def update(self, player_y, max_height, scroll_speed, camera_offset):
         # Gradually shift colors over time or based on player position
-        shift_factor = min(1.0, max(0.0, (player_y - 100) / max_height)) 
+        y = player_y - camera_offset
+        shift_factor = min(1, abs(y / max_height))
+
         #shift_factor = random.uniform(0.0, 1.0)
         # Interpolate the top color dynamically
         self.top_color.r = int(GRADIENT_TOP_COLOR[0] + (GRADIENT_BOTTOM_COLOR[0] - GRADIENT_TOP_COLOR[0]) * shift_factor)

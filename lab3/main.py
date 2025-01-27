@@ -36,7 +36,6 @@ VERTICAL_SPEED_JUMP_INCREASE = settings["Physics"]["VERTICAL_SPEED_JUMP_INCREASE
 COMBO_TIMEOUT = settings["Game World"]["COMBO_TIMEOUT"]
 DARK_MODE_CHANCE = settings["Game World"]["DARK_MODE_CHANCE"]
 DARK_MODE_DURATION = settings["Game World"]["DARK_MODE_DURATION"]
-#WALL_BOUNCE_BACK = settings[""]
 
 PLAYER_COLOR = list(map(int, settings["Colors"]["PLAYER_COLOR"]))[:3]
 PLATFORM_COLOR = list(map(int, settings["Colors"]["PLATFORM_COLOR"]))[:3]
@@ -82,7 +81,7 @@ class Platform:
         
         if previous_platform:
             x = random.randint(0, SCREEN_WIDTH - width)
-            y = previous_platform.rect.y - PLATFORM_SPACING - random.randint(0, 20)
+            y = previous_platform.rect.y - PLATFORM_SPACING
             self.rect = pygame.Rect(x, y, width, PLATFORM_HEIGHT)
         else:
             # Ground (initial) platform
@@ -256,17 +255,13 @@ class Player:
         # Render rotation
         if self.is_rotating:
             player_surface = pygame.Surface((PLAYER_SIZE, PLAYER_SIZE), pygame.SRCALPHA)
-        
-            # Draw a rounded rectangle onto the surface
+            # Draw a rectangle onto the surface
             pygame.draw.rect(player_surface, player_color, player_surface.get_rect(), border_radius=4)
-            
             # Rotate the surface
             rotated_surface = pygame.transform.rotate(player_surface, self.rotation_angle)
-            
             # Get the rotated rectangle's position
             rotated_rect = rotated_surface.get_rect(center=player_screen_rect.center)
-            
-            # Blit (draw) the rotated surface
+            # Draw the rotated surface
             screen.blit(rotated_surface, rotated_rect.topleft)
         else:
             # Normal rendering - no rotation
@@ -306,7 +301,7 @@ def main():
         scroll_distance = previous_camera_offset - camera_offset
         previous_camera_offset = camera_offset
         
-        background.update(player.rect.y, SCREEN_HEIGHT, scroll_distance)
+        background.update(player.rect.y, SCREEN_HEIGHT, scroll_distance, camera_offset)
         background.render(screen)
             
         # EVENTS
@@ -452,7 +447,6 @@ def main():
         pygame.display.flip()
 
     # Game over
-    #screen.fill((0, 0, 0, 100))
     over_txt = font.render("Game Over!", True, (255, 255, 255))
     final_score = font.render(f"Final Score: {state.score}", True, (255, 255, 255))
     top_floor = font.render(f"Highest Floor: {player.get_max_floor()}", True, (255, 255, 255))
