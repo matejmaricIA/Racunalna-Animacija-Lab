@@ -21,9 +21,8 @@ class DynamicBackground:
     def __init__(self, screen_width, screen_height):
         self.screen_width = screen_width
         self.screen_height = screen_height
-        self.top_color = pygame.Color(GRADIENT_TOP_COLOR)  # Sky Blue
-        self.bottom_color = pygame.Color(GRADIENT_BOTTOM_COLOR)  # Midnight Blue
-        self.color_shift_speed = 10
+        self.top_color = pygame.Color(GRADIENT_TOP_COLOR)  
+        self.bottom_color = pygame.Color(GRADIENT_BOTTOM_COLOR)
         
         self.shapes = []
         for _ in range(120):
@@ -74,7 +73,7 @@ class BackgroundShape:
             random.randint(50, 150),  # Muted random red
             random.randint(50, 150),  # Muted random green
             random.randint(50, 150),  # Muted random blue
-            random.randint(50, 150),  # Semi-transparent
+            random.randint(100, 200),  # Semi-transparent
         )
 
     def update(self, scroll_distance):

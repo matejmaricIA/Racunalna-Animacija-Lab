@@ -44,7 +44,7 @@ PLATFORM_COLOR = list(map(int, settings["Colors"]["PLATFORM_COLOR"]))[:3]
 
 def create_light_mask(player_pos, radius = 20):
     light_mask = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-    light_mask.fill((0, 0, 0, 200))  # Dark background with slight transparency
+    light_mask.fill((0, 0, 0, 220))  # Dark background with slight transparency
 
     # Draw a transparent circle (light) around the player
     pygame.draw.circle(light_mask, (0, 0, 0, 0), player_pos, radius)
@@ -340,7 +340,10 @@ def main():
                     player.velocity.x = -1
                 elif player.velocity.x > 0:
                     player.velocity.x = 1
-
+            if keys[K_LEFT]:
+                player.velocity.x -= ACCELERATION * 0.5 * dt
+            elif keys[K_RIGHT]:
+                player.velocity.x += ACCELERATION * 0.5 * dt
         # UPDATE PLAYER
         just_landed = player.update(platforms, dt)
         
@@ -423,7 +426,7 @@ def main():
                     state.platform_reduction_ratio *= PLATFORM_REDUCTION_COEF
 
         # Game Over if below screen
-        if player.rect.bottom - camera_offset > SCREEN_HEIGHT + 100:
+        if player.rect.bottom - camera_offset > SCREEN_HEIGHT + 10:
             running = False
 
         # RENDER
@@ -449,7 +452,7 @@ def main():
         pygame.display.flip()
 
     # Game over
-    #screen.fill((0, 0, 0))
+    #screen.fill((0, 0, 0, 100))
     over_txt = font.render("Game Over!", True, (255, 255, 255))
     final_score = font.render(f"Final Score: {state.score}", True, (255, 255, 255))
     top_floor = font.render(f"Highest Floor: {player.get_max_floor()}", True, (255, 255, 255))
