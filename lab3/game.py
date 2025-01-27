@@ -10,11 +10,11 @@ def load_default():
             return json.load(f)
 
 # Paths
-SETTINGS_FILE = "settings.json"
+SETTINGS_FILE = "settings/settings.json"
 GAME_SCRIPT = "main.py"
 
 # Default settings
-DEFAULT_SETTINGS_FILE = "default_settings.json"
+DEFAULT_SETTINGS_FILE = "settings/default_settings.json"
 # Track the game process
 game_process = None
 DEFAULT_SETTINGS = load_default()
@@ -101,7 +101,7 @@ def stop_game_callback():
 def create_config_ui():
     settings = load_settings()
 
-    with dpg.window(label="Game Configuration", width=600, height=750):
+    with dpg.window(label="Game Configuration", width=600, height=750, no_scrollbar = False):
         dpg.add_text("Adjust the game settings below:")
         dpg.add_separator()
         
