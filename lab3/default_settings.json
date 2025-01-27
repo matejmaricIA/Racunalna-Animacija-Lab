@@ -1,7 +1,7 @@
 {
     "Physics": {
         "GRAVITY": 0.8999999761581421,
-        "BASE_JUMP": -15,
+        "BASE_JUMP": -13,
         "VERTICAL_SPEED_JUMP_INCREASE": 0.20000000298023224,
         "FRICTION": 0.1499999761581421,
         "ACCELERATION": 0.30000001192092896
@@ -20,20 +20,20 @@
         "DIFFICULTY_INCREASE_TIMER": 30,
         "PLATFORM_REDUCTION_COEF": 0.949999988079071,
         "COMBO_TIMEOUT": 3000,
-        "DARK_MODE_CHANCE": 0.05000000074505806,
+        "DARK_MODE_CHANCE": 0.009999999776482582,
         "DARK_MODE_DURATION": 10000
     },
     "Colors": {
         "PLAYER_COLOR": [
-            255.0,
-            0.0,
-            0.0,
+            240.0,
+            128.0,
+            128.0,
             255.0
         ],
         "PLATFORM_COLOR": [
-            0.0,
-            0.0,
-            255.0,
+            72.0,
+            209.0,
+            204.0,
             255.0
         ],
         "GRADIENT_TOP_COLOR": [
