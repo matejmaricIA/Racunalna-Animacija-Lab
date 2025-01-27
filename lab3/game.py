@@ -4,6 +4,11 @@ import subprocess
 import dearpygui.dearpygui as dpg
 import sys
 
+def load_default():
+    if os.path.exists(DEFAULT_SETTINGS_FILE):
+        with open(DEFAULT_SETTINGS_FILE, "r") as f:
+            return json.load(f)
+
 # Paths
 SETTINGS_FILE = "settings.json"
 GAME_SCRIPT = "main.py"
@@ -12,46 +17,7 @@ GAME_SCRIPT = "main.py"
 DEFAULT_SETTINGS_FILE = "default_settings.json"
 # Track the game process
 game_process = None
-
-DEFAULT_SETTINGS = {
-    "Physics": {
-        "GRAVITY": 0.8999999761581421,
-        "BASE_JUMP": -15,
-        "VERTICAL_SPEED_JUMP_INCREASE": 0.20000000298023224,
-        "FRICTION": 0.1499999761581421,
-        "ACCELERATION": 0.30000001192092896
-    },
-    "Game World": {
-        "SCREEN_WIDTH": 700,
-        "SCREEN_HEIGHT": 800,
-        "PLAYER_SIZE": 25,
-        "PLATFORM_HEIGHT": 20,
-        "CAMERA_THRESHOLD": 200,
-        "PLATFORM_SPACING": 80,
-        "BASE_PLATFORM_WIDTH": 200,
-        "MIN_PLATFORM_WIDTH": 20,
-        "MAX_SPEED_LEVEL": 15,
-        "PLATFORM_SHAKE_DURATION": 1500,
-        "DIFFICULTY_INCREASE_TIMER": 30,
-        "PLATFORM_REDUCTION_COEF": 0.949999988079071,
-        "COMBO_TIMEOUT": 3000,
-        "DARK_MODE_CHANCE": 0.05000000074505806,
-        "DARK_MODE_DURATION": 10000
-    },
-    "Colors": {
-        "PLAYER_COLOR": [255, 0, 0],
-        "PLATFORM_COLOR": [0, 0, 255],
-        "GRADIENT_TOP_COLOR": [135, 206, 235],
-        "GRADIENT_BOTTOM_COLOR": [25, 25, 112]
-    }
-}
-
-
-def resource_path(relative_path):
-    """ Get the absolute path to the resource, works for PyInstaller bundles. """
-    if hasattr(sys, '_MEIPASS'):
-        return os.path.join(sys._MEIPASS, relative_path)  # PyInstaller's temp folder
-    return os.path.join(os.path.abspath("."), relative_path)
+DEFAULT_SETTINGS = load_default()
 
 def load_settings():
     # Load last settings first

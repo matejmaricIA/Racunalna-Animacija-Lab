@@ -61,7 +61,6 @@ class GameState:
         self.last_speed_increase = 0
 
         self.score = 0
-        #self.highest_floor = 0
         self.combo = 0
         self.combo_start_time = 0
         self.total_floors = 0
@@ -111,7 +110,7 @@ class Platform:
 
         if dark_mode:
             # Loop over the platform's width to determine which parts are lit
-            step = 5  # Granularity of the light check (adjust for performance)
+            step = 5  # Granularity of the light check
             for x in range(plat_screen_rect.left, plat_screen_rect.right, step):
                 for y in range(plat_screen_rect.top, plat_screen_rect.bottom, step):
                     dist_to_player = ((x - player_pos[0]) ** 2 + (y - player_pos[1]) ** 2) ** 0.5
@@ -180,7 +179,7 @@ class Player:
 
         self.on_ground = False
         for p in platforms:
-            if p.state in ("normal", "shaking") and self.velocity.y > 0 and self.rect.colliderect(p.rect):
+            if self.velocity.y > 0 and self.rect.colliderect(p.rect):
                 if self.color == p.color:
                     # Additional check: top landing
                     if (
@@ -226,9 +225,7 @@ class Player:
     def update_trail(self):
         # Add the current position to the trail
         self.trail.append((self.rect.centerx, self.rect.centery, self.color))
-
         # Limit the trail length based on speed
-        #max_trail_length = int(abs(self.velocity.x) ** 2)  # Faster movement = longer trail
         total_speed = self.velocity.length()
         max_trail_length = int(total_speed ** 2)
         if len(self.trail) > max_trail_length:
@@ -272,8 +269,7 @@ class Player:
             # Blit (draw) the rotated surface
             screen.blit(rotated_surface, rotated_rect.topleft)
         else:
-            # Normal rendering (no rotation)
-            #pygame.draw.rect(screen, player_color, player_screen_rect)
+            # Normal rendering - no rotation
             pygame.draw.rect(screen, player_color, player_screen_rect, border_radius = 4)
     
     def get_max_floor(self):
@@ -319,7 +315,6 @@ def main():
                 running = False
 
             if event.type == KEYDOWN and event.key == K_SPACE and player.on_ground:
-                #print(abs(player.velocity.x))
                 jump_power = BASE_JUMP * (1 + abs(player.velocity.x) * VERTICAL_SPEED_JUMP_INCREASE)
                 player.velocity.y = jump_power
                 player.on_ground = False # Prevents the player from being able to jump mid-air
@@ -403,23 +398,12 @@ def main():
             platforms.append(newp)
             highest_p = newp
 
-        # SHAKING LOGIC FOR LOWEST PLATFORM
-        if current_floor >= 5:
-            normal_plats = [p for p in platforms if p.state == "normal"]
-            if normal_plats:
-                # physically lowest = largest y
-                lowest_p = max(normal_plats, key=lambda p: p.rect.y)
-                # If its center is near bottom of the screen (camera_offset + SCREEN_HEIGHT)
-                if lowest_p.rect.centery >= (camera_offset + 0.9 * SCREEN_HEIGHT):
-                    lowest_p.state = "shaking"
-                    lowest_p.shake_timer = PLATFORM_SHAKE_DURATION
-
-        # UPDATE PLATFORMS
+        # UPDATE PLATFORMS (Remove platforms that are below screen)
         updated_list = []
         for p in platforms:
-            p.update(dt)
+            #p.update(dt)
             # keep if not too far below
-            if p.rect.top < camera_offset + SCREEN_HEIGHT + 500:
+            if p.rect.top < camera_offset + SCREEN_HEIGHT + 100:
                 updated_list.append(p)
         platforms = updated_list
 
@@ -445,14 +429,7 @@ def main():
         # RENDER
         # Render Platforms
         for plat in platforms:
-            #color = (255, 255, 255)
-            if plat.state == "shaking":
-                offset = random.randint(-2, 2)
-                #plat_screen_rect.x += offset
-                plat.rect.centerx += offset
-                color = (0, 0, 0)
             plat.render(screen, camera_offset, player = player, light_radius = state.light_radius, dark_mode = state.dark_mode)
-            #pygame.draw.rect(screen, color, plat_screen_rect)
         player_pos = (player.rect.centerx, player.rect.centery - camera_offset)    
         if state.dark_mode:
             state.light_radius = calculate_light_radius(100, state.combo)
@@ -472,11 +449,19 @@ def main():
         pygame.display.flip()
 
     # Game over
-    screen.fill((0, 0, 0))
+    #screen.fill((0, 0, 0))
     over_txt = font.render("Game Over!", True, (255, 255, 255))
     final_score = font.render(f"Final Score: {state.score}", True, (255, 255, 255))
-    screen.blit(over_txt, (SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 - 30))
-    screen.blit(final_score, (SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 10))
+    top_floor = font.render(f"Highest Floor: {player.get_max_floor()}", True, (255, 255, 255))
+    # Get text surface dimensions
+    over_txt_rect = over_txt.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 30))
+    final_score_rect = final_score.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 10))
+    top_floor_rect = top_floor.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 40))
+
+    # Blit the text surfaces
+    screen.blit(over_txt, over_txt_rect.topleft)
+    screen.blit(final_score, final_score_rect.topleft)
+    screen.blit(top_floor, top_floor_rect.topleft)
     pygame.display.flip()
     waiting_for_key = True
     while waiting_for_key:
