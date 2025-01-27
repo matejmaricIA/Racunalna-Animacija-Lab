@@ -9,7 +9,7 @@ def load_settings():
     with open(SETTINGS_FILE, "r") as f:
         return json.load(f)
 
-SETTINGS_FILE = "settings.json"
+SETTINGS_FILE = "settings/settings.json"
 
 # Load the settings
 settings = load_settings()
@@ -25,7 +25,7 @@ class DynamicBackground:
         self.bottom_color = pygame.Color(GRADIENT_BOTTOM_COLOR)
         
         self.shapes = []
-        for _ in range(120):
+        for _ in range(90):
             parallax_coef = random.uniform(0.1, 1.0)
             self.shapes.append(BackgroundShape(screen_width, screen_height))
 
@@ -34,7 +34,6 @@ class DynamicBackground:
         y = player_y - camera_offset
         shift_factor = min(1, abs(y / max_height))
 
-        #shift_factor = random.uniform(0.0, 1.0)
         # Interpolate the top color dynamically
         self.top_color.r = int(GRADIENT_TOP_COLOR[0] + (GRADIENT_BOTTOM_COLOR[0] - GRADIENT_TOP_COLOR[0]) * shift_factor)
         self.top_color.g = int(GRADIENT_TOP_COLOR[1] + (GRADIENT_BOTTOM_COLOR[1] - GRADIENT_TOP_COLOR[1]) * shift_factor)
