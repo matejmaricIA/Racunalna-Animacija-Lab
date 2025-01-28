@@ -139,7 +139,7 @@ def create_config_ui():
 # Main function
 def main():
     dpg.create_context()
-    dpg.create_viewport(title="Game Configuration", width=600, height=700, resizable=False)
+    dpg.create_viewport(title="Game Configuration", width=500, height=700, resizable=True)
     create_config_ui()
     dpg.setup_dearpygui()
     dpg.show_viewport()

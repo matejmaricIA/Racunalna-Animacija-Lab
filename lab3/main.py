@@ -4,16 +4,31 @@ import random
 from pygame.locals import *
 import json
 from dynamic_background import DynamicBackground, BackgroundShape
+import os
+
+SETTINGS_FILE = "settings/settings.json"
+HIGHSCORE_FILE = "settings/highscore.json"
 
 def load_settings():
     """Load game settings from settings.json"""
     with open(SETTINGS_FILE, "r") as f:
         return json.load(f)
 
-SETTINGS_FILE = "settings/settings.json"
+def load_high_score():
+    """Load the high score from a file."""
+    if os.path.exists(HIGHSCORE_FILE):
+        with open(HIGHSCORE_FILE, "r") as f:
+            return json.load(f).get("high_score", 0)
+    return 0
+
+def save_high_score(high_score):
+    """Save the high score to a file."""
+    with open(HIGHSCORE_FILE, "w") as f:
+        json.dump({"high_score": high_score}, f)
 
 # Load the settings
 settings = load_settings()
+
 
 # Assign settings to variables
 SCREEN_WIDTH = settings["Game World"]["SCREEN_WIDTH"]
@@ -201,7 +216,7 @@ class Player:
                             self.max_floor = self.current_platform.height
                         self.multi_jump = self.current_platform.height - self.past_platform.height
                         break
-                    
+        
         if abs(self.velocity.y) >= 15:
             self.is_rotating = True 
                     
@@ -212,7 +227,7 @@ class Player:
         
         if self.color_change_timer > 0:
             self.color_change_timer -= dt/100
-            blend_factor = 1 - (self.color_change_timer / self.color_change_duration)
+            blend_factor = (self.color_change_timer / self.color_change_duration)
             self.current_trail_color = self.lerp_color(self.current_trail_color, self.target_trail_color, blend_factor)
         
         just_landed = (self.on_ground and not self.was_on_ground)
@@ -241,7 +256,9 @@ class Player:
             pygame.draw.rect(trail_surface, (*rgb_color, alpha), trail_surface.get_rect(), border_radius=4)
 
             if self.is_rotating:
-                trail_surface = pygame.transform.rotate(trail_surface, self.rotation_angle - (i * 10))
+                delayed_rotation = self.rotation_angle - (i * 10)
+                delayed_rotation %= 360
+                trail_surface = pygame.transform.rotate(trail_surface, delayed_rotation)
             trail_rect = trail_surface.get_rect(center=(x, y - camera_offset))
             screen.blit(trail_surface, trail_rect.topleft)
 
@@ -271,6 +288,7 @@ class Player:
         return self.max_floor
 
 def main():
+    high_score = load_high_score()
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
@@ -447,26 +465,42 @@ def main():
         pygame.display.flip()
 
     # Game over
+
     over_txt = font.render("Game Over!", True, (255, 255, 255))
     final_score = font.render(f"Final Score: {state.score}", True, (255, 255, 255))
     top_floor = font.render(f"Highest Floor: {player.get_max_floor()}", True, (255, 255, 255))
+    new_high_score_txt = font.render("New High Score!" if state.score > high_score else "", True, (255, 255, 0))
+    play_again = font.render("Press R to Restart or Q to Quit", True, (255, 255, 255))
     # Get text surface dimensions
     over_txt_rect = over_txt.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 30))
     final_score_rect = final_score.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 10))
     top_floor_rect = top_floor.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 40))
+    new_high_score_rect = new_high_score_txt.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 65))
+    play_again_rect = play_again.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 85))
 
     # Blit the text surfaces
     screen.blit(over_txt, over_txt_rect.topleft)
     screen.blit(final_score, final_score_rect.topleft)
     screen.blit(top_floor, top_floor_rect.topleft)
+    if state.score > high_score:
+        screen.blit(new_high_score_txt, new_high_score_rect.topleft)
+        high_score = state.score
+        save_high_score(high_score)
+    screen.blit(play_again, play_again_rect.topleft)
     pygame.display.flip()
     waiting_for_key = True
     while waiting_for_key:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 waiting_for_key = False  # Exit if the window is closed
+                running = False
             if event.type == pygame.KEYDOWN:
-                waiting_for_key = False  # Exit if any key is pressed
+                if event.key == pygame.K_r:  # Restart the game
+                    waiting_for_input = False
+                    main()  # Restart the game by calling main() again
+                elif event.key == pygame.K_q:  # Quit the game
+                    waiting_for_input = False
+                    running = False
 
 
 if __name__ == "__main__":

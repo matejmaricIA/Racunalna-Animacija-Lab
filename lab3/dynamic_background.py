@@ -26,7 +26,6 @@ class DynamicBackground:
         
         self.shapes = []
         for _ in range(90):
-            parallax_coef = random.uniform(0.1, 1.0)
             self.shapes.append(BackgroundShape(screen_width, screen_height))
 
     def update(self, player_y, max_height, scroll_speed, camera_offset):
@@ -71,9 +70,9 @@ class BackgroundShape:
         self.x = random.randint(0, screen_width)  # Initial x position
         self.y = random.randint(-screen_height, 0)  # Initial y position
         self.color = (
-            random.randint(50, 150),  # Muted random red
-            random.randint(50, 150),  # Muted random green
-            random.randint(50, 150),  # Muted random blue
+            random.randint(50, 150),
+            random.randint(50, 150), 
+            random.randint(50, 150), 
             random.randint(100, 200),  # Semi-transparent
         )
 
