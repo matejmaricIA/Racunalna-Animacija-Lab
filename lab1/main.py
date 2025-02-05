@@ -122,13 +122,13 @@ def get_spline_pos():
     seg_ctrl = control_points[seg_id : seg_id + 4] # 4 kontrolne točke tren segmenta
     return calc_point(param_range[current_segment_t], seg_ctrl)[0] # Računa se pozicija na krivulji
 
-# Računanje kuta između dva vektora
+# Računanje kuta između dva vektora (koliko se objekt treba rotirati od svog originalnog referentnog smjera)
 def vec_angle(s, e):
     dot_v = np.dot(s, e)
     mag = np.linalg.norm(s) * np.linalg.norm(e) # Umnožak duljina vektora
     return np.degrees(np.arccos(dot_v / mag)) # Izračun kuta i konverzija u stupnjeve
 
-# Iračun osi rotacije
+# Iračun osi rotacije (izračun osi rotacije između referentne osi i trenutne tangente)
 def calc_rot_axis(e):
     return np.cross(ref_axis[0], e[0]) # Vektorski umnožak referentne osi i tangente
 
